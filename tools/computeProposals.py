@@ -63,7 +63,11 @@ def main():
         res[:, :, 2] = masks[:, :, i] * 255 + (1 - masks[:, :, i]) * res[:, :, 2]
 
         mask = masks[:, :, i].astype(np.uint8)
-        _, contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        major = cv2.__version__.split('.')[0]
+        if major == '3':
+            _, contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
+        else:
+            contours, _ = cv2.findContours(mask.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_NONE)
         cnt_area = [cv2.contourArea(cnt) for cnt in contours]
         cnt_max_id = np.argmax(cnt_area)
         contour = contours[cnt_max_id]
